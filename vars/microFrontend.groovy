@@ -13,7 +13,39 @@ def call(body) {
     def nextStage = ""
     def runNextStage = false
     def version = ""
-    node {
+
+    // Set the agent as kubernetes with yaml
+
+    agent {
+        kubernetes {
+            yaml '''
+                apiVersion: v1
+                kind: Pod
+                spec:
+                    containers:
+                    - name: maven
+                    image: maven:alpine
+                    command:
+                    - cat
+                    tty: true
+                    - name: docker
+                    image: docker:latest
+                    command:
+                    - cat
+                    tty: true
+                    volumeMounts:
+                    - mountPath: /var/run/docker.sock
+                        name: docker-sock
+                    volumes:
+                    - name: docker-sock
+                    hostPath:
+                        path: /var/run/docker.sock
+            
+            '''
+        }
+    }
+
+    node() {
       def nodeJS = tool name: 'node16', type: 'nodejs'
       env.PATH = "${nodeJS}/bin:${env.PATH}"
       //def server = Artifactory.server 'jfrog_artifactory_01'

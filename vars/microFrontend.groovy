@@ -13,7 +13,7 @@ def call(body) {
     def nextStage = ""
     def runNextStage = false
     def version = ""
-    node("cicd") {
+    node {
       def nodeJS = tool name: 'node16', type: 'nodejs'
       env.PATH = "${nodeJS}/bin:${env.PATH}"
       //def server = Artifactory.server 'jfrog_artifactory_01'
